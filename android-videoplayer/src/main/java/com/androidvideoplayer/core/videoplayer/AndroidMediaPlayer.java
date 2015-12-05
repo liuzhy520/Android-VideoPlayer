@@ -1,8 +1,12 @@
 package com.androidvideoplayer.core.videoplayer;
 
 import android.media.MediaPlayer;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
-import com.androidvideoplayer.core.model.VideoModel;
+import com.androidvideoplayer.core.base.BasePlayer;
+import com.androidvideoplayer.core.model.VideoInfo;
+import com.androidvideoplayer.core.util.VideoLog;
 
 import java.util.ArrayList;
 
@@ -11,11 +15,9 @@ import java.util.ArrayList;
  *
  * This class will return the media player of the android system with cache preload
  */
-public class AndroidMediaPlayer {
+public class AndroidMediaPlayer implements BasePlayer{
 
-    private String[] videolistStr;
-
-    private ArrayList<VideoModel> videoList;
+    private ArrayList<VideoInfo> videoList;
 
     private MediaPlayer currentPlayer;
 
@@ -23,39 +25,209 @@ public class AndroidMediaPlayer {
 
     private int currentIndex;
 
-    public AndroidMediaPlayer(){
+    private boolean isNextPrepared;
 
+    private SurfaceHolder surfaceHolder;
+
+    private OnLastVideoCompleteListener onLastComplete;
+
+    public AndroidMediaPlayer(SurfaceView surfaceView){
+
+        videoList = new ArrayList<>();
+        currentPlayer = new MediaPlayer();
+        nextPlayer = new MediaPlayer();
+        currentIndex = 0;
+        isNextPrepared = false;
+        surfaceHolder = surfaceView.getHolder();
     }
 
-    public void setVideos(String[] videolistStr){
-
-    }
-
-    public void setVideos(ArrayList<VideoModel> videoList){
+    /**
+     * set the video list into the player
+     * @param videoList the video list
+     * @param startIndex the index of the list that start to play
+     */
+    public void setVideos(ArrayList<VideoInfo> videoList, int startIndex){
         this.videoList = videoList;
+        currentIndex = startIndex;
     }
 
-    public void playVideos(){
+    /**
+     * play the videos list from input
+     * @param onPrepared return if the current player is prepared
+     * @param onCompleted return if the current player is completed
+     */
+    public void playVideos(MediaPlayer.OnPreparedListener onPrepared, MediaPlayer.OnCompletionListener onCompleted){
 
     }
 
-    public void playVideosAsync(){
+    /**
+     * play the video list with async preparation
+     * @param onPrepared return if the current player is prepared
+     * @param onCompleted return if the current player is completed
+     */
+    public void playVideosAsync(MediaPlayer.OnPreparedListener onPrepared, MediaPlayer.OnCompletionListener onCompleted){
 
     }
 
-    public void playNextVideo(){
+    /**
+     * play the next video when the current one is playing or preparing
+     * @param onPrepared return if the current player is prepared
+     * @param onCompleted return if the current player is completed
+     */
+    public void playNextVideo(MediaPlayer.OnPreparedListener onPrepared, MediaPlayer.OnCompletionListener onCompleted){
+        if(currentIndex >= videoList.size() - 1){
+            if(onLastComplete != null){
+                onLastComplete.onLastVideoCompleted();
+            }
+            return;
+        }
 
+        currentPlayer = nextPlayer;
     }
 
+    /**
+     * return the index of the current video in the list
+     * @return current index
+     */
     public int getCurrentIndex(){
         return currentIndex;
     }
 
+    /**
+     * return the current media player
+     * @return MediaPlayer
+     */
     public MediaPlayer getCurrentPlayer(){
         return currentPlayer;
     }
 
+    /**
+     * return the next media player
+     * @return MediaPlayer
+     */
     public MediaPlayer getNextPlayer(){
         return nextPlayer;
+    }
+
+    /**
+     * get the video info model of the current index of the list
+     * @return VideoInfo
+     */
+    public VideoInfo getCurrentVideoInfo(){
+        return videoList.get(currentIndex);
+    }
+
+    /**
+     * the OnLastVideoCompleteListener can be set in here
+     * @param listener OnLastVideoCompleteListener
+     */
+    public void setOnLastVideoCompleteListener(OnLastVideoCompleteListener listener){
+        onLastComplete = listener;
+    }
+
+    @Override
+    public void start() {
+
+        try {
+            currentPlayer.start();
+            logV("start!");
+        }catch (Exception e){e.getStackTrace();}
+    }
+
+    @Override
+    public void pause() {
+
+        try {
+            if(currentPlayer.isPlaying()){
+                currentPlayer.pause();
+                logV("pause!");
+            }
+        }catch (Exception e){e.getStackTrace();}
+    }
+
+    @Override
+    public void stop() {
+
+        try {
+            if(currentPlayer.isPlaying()){
+                currentPlayer.stop();
+                logV("stop!");
+            }
+        }catch (Exception e){e.getStackTrace();}
+    }
+
+    @Override
+    public void release() {
+
+        try {
+            currentPlayer.release();
+            nextPlayer.release();
+        }catch (Exception e){e.printStackTrace();}
+
+        currentPlayer = null;
+        nextPlayer = null;
+
+        logV("released!");
+    }
+
+    @Override
+    public void seekTo(int position) {
+
+        try{
+            currentPlayer.seekTo(position);
+            logV("seek to" + position);
+        }catch (Exception e){e.getStackTrace();}
+
+    }
+
+    @Override
+    public int getCurrentVideoPosition() {
+        try{
+            if(currentPlayer.isPlaying()){
+                return currentPlayer.getCurrentPosition();
+            }else
+                return 0;
+        }catch (Exception e){e.getStackTrace();}
+        return 0;
+    }
+
+    @Override
+    public int getCurrentVideoDuration() {
+
+        try {
+            int duration = currentPlayer.getDuration();
+            logV("duration :" + duration);
+            return duration;
+        }catch (Exception e){e.getStackTrace();}
+        return 0;
+    }
+
+    @Override
+    public boolean isVideoPlaying() {
+        try {
+            return currentPlayer.isPlaying();
+        }catch (Exception e){e.getStackTrace();}
+        return false;
+    }
+
+
+    public interface OnLastVideoCompleteListener{
+        void onLastVideoCompleted();
+    }
+
+    /**
+     * log message
+     * @param msg message
+     */
+    protected void logV(String msg){
+        VideoLog.logV(this.getClass(), msg);
+    }
+
+    /**
+     * log error
+     * @param msg message
+     */
+    protected void logE(String msg){
+        VideoLog.logE(this.getClass(), msg);
     }
 }

@@ -5,7 +5,7 @@ package com.androidvideoplayer.core.model;
  *
  * This is the Model object of the video which contains the basic information of the video
  */
-public class VideoModel {
+public class VideoInfo {
 
     // the url of the video content
     public String url;

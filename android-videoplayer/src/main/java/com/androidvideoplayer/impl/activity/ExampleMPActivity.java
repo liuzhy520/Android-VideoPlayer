@@ -176,7 +176,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         String test = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
 
         String m3u8FromApple = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
-        String legendWing = "http://legendwing.com/videos/LOVE-128.mp4";
+        String legendWing = "http://legendwing.com/videos/video3.mp4";
         this.mediaPlayer = new MediaPlayer();
         this.mediaPlayer.setDataSource(legendWing);
         this.mediaPlayer.setDisplay(this.surfaceHolder);

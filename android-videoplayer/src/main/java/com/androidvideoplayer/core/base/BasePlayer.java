@@ -1,5 +1,8 @@
 package com.androidvideoplayer.core.base;
 
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
 /**
  * Created by wayne on 12/5/15.
  *
@@ -58,4 +61,6 @@ public interface BasePlayer {
      * initialized or has been released.
      */
     boolean isVideoPlaying();
+
+
 }
