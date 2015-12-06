@@ -22,7 +22,7 @@ import com.androidvideoplayer.R;
 import java.io.IOException;
 import java.net.URI;
 
-public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
+public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, SurfaceHolder.Callback{
     /**
      * this is a video demo to play stream video
@@ -50,7 +50,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
         this.progressBar.setVisibility(View.VISIBLE);
         controller = (LinearLayout) findViewById(R.id.base_video_control_layout);
-        Log.v("mplayer", ">>>create ok.");
+        logV("activity create ok");
         this.surfaceView.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -129,6 +129,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
             try{
                 this.mediaPlayer.seekTo(currentPosition);
                 this.mediaPlayer.start();
+                logV("resume!");
                 fixVideo();
             }catch (Exception e) {e.printStackTrace();}
             isPause = false;
@@ -140,6 +141,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         try {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
+                logV("pause!");
                 isPause = true;
                 currentPosition = this.mediaPlayer.getCurrentPosition();
             }
@@ -147,19 +149,13 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         }catch (Exception e) {e.printStackTrace();}
 
     }
-    @Override
-    protected void onStop(){
-        super.onStop();
-        try {
-            this.mediaPlayer.stop();
-        }catch (Exception e){e.printStackTrace();}
 
-    }
     @Override
     protected void onDestroy(){
         super.onDestroy();
         try {
             this.mediaPlayer.release();
+            logV("released!");
         }catch (Exception e) {e.printStackTrace();}
 
     }
@@ -186,7 +182,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         this.mediaPlayer.setOnBufferingUpdateListener(this);
         this.mediaPlayer.setOnPreparedListener(this);
         //this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        Log.v("mplayer", ">>>play video");
+        logV("play video");
     }
 
     @Override
@@ -203,10 +199,10 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
             try {
                 this.playVideo();
             } catch (Exception e) {
-                Log.e("mplayer", ">>>error", e);
+               logE("surface error");
             }
         }
-        Log.v("mplayer", ">>>surface created");
+        logV("surface created");
     }
 
     @Override
@@ -222,6 +218,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
 
+        logV("buffering :" + i);
     }
 
     @Override
@@ -237,6 +234,7 @@ public class ExampleMPActivity extends Activity implements MediaPlayer.OnBufferi
         if (this.videoHeight != 0 && this.videoWidth != 0) {
             this.surfaceHolder.setFixedSize(this.videoWidth, this.videoHeight);
             this.mediaPlayer.start();
+            logV("start!");
         }
         fixVideo();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
