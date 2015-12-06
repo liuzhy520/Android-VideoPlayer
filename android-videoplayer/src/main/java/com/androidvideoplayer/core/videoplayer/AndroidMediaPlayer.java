@@ -5,6 +5,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.androidvideoplayer.core.base.BasePlayer;
+import com.androidvideoplayer.core.base.BaseVideoPlayer;
 import com.androidvideoplayer.core.model.VideoInfo;
 import com.androidvideoplayer.core.util.VideoLog;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  *
  * This class will return the media player of the android system with cache preload
  */
-public class AndroidMediaPlayer implements BasePlayer{
+public class AndroidMediaPlayer extends BaseVideoPlayer implements BasePlayer{
 
     private ArrayList<VideoInfo> videoList;
 
@@ -33,6 +34,11 @@ public class AndroidMediaPlayer implements BasePlayer{
 
     public AndroidMediaPlayer(SurfaceView surfaceView){
 
+        if(surfaceView == null){
+            logE("The SurfaceView has not set yet, please use setSurfaceView() to return the correct one");
+            return;
+        }
+        
         videoList = new ArrayList<>();
         currentPlayer = new MediaPlayer();
         nextPlayer = new MediaPlayer();
@@ -215,19 +221,5 @@ public class AndroidMediaPlayer implements BasePlayer{
         void onLastVideoCompleted();
     }
 
-    /**
-     * log message
-     * @param msg message
-     */
-    protected void logV(String msg){
-        VideoLog.logV(this.getClass(), msg);
-    }
 
-    /**
-     * log error
-     * @param msg message
-     */
-    protected void logE(String msg){
-        VideoLog.logE(this.getClass(), msg);
-    }
 }
