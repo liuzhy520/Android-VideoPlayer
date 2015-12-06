@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
+import android.media.TimedText;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -18,12 +19,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.androidvideoplayer.R;
+import com.androidvideoplayer.core.base.IPlayer;
+import com.androidvideoplayer.core.widget.VideoController;
+import com.androidvideoplayer.impl.widget.VideoControllerBar;
 
 import java.io.IOException;
 import java.net.URI;
 
 public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener, SurfaceHolder.Callback{
+        MediaPlayer.OnPreparedListener, SurfaceHolder.Callback, IPlayer{
     /**
      * this is a video demo to play stream video
      */
@@ -38,6 +42,8 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
     private boolean isFullScreenClick = false;
     private int currentPosition = 0;
     private LinearLayout controller;
+
+    private VideoControllerBar cbar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,8 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
         this.progressBar.setVisibility(View.VISIBLE);
         controller = (LinearLayout) findViewById(R.id.base_video_control_layout);
+        cbar = (VideoControllerBar) findViewById(R.id.video_controller_bar);
+        cbar.setVideoPlayer(this);
         logV("activity create ok");
         this.surfaceView.setOnClickListener(new View.OnClickListener() {
 
@@ -216,8 +224,9 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
 
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
-
+        cbar.checkPlayBtn(mediaPlayer.isPlaying());
         logV("buffering :" + i + "%");
+        logV("current position :" + mediaPlayer.getCurrentPosition());
     }
 
     @Override
@@ -239,6 +248,7 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         String d = String.valueOf(mediaPlayer.getDuration());
         Toast.makeText(this,"start!" + d, Toast.LENGTH_SHORT).show();
+        cbar.checkPlayBtn(mediaPlayer.isPlaying());
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -255,18 +265,24 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) this.surfaceView.getLayoutParams();
         if(screenH > screenW){
             try {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = screenW * this.videoHeight / this.videoWidth;
-                this.surfaceView.setLayoutParams(params);
+                if(this.videoWidth != 0){
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.height = screenW * this.videoHeight / this.videoWidth;
+                    this.surfaceView.setLayoutParams(params);
+                }
+
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             }catch (Exception e){e.printStackTrace();}
 
         }else if(screenH < screenW){
             try{
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.width = screenH * this.videoWidth / this.videoHeight;
-                this.surfaceView.setLayoutParams(params);
+                if(this.videoHeight != 0){
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.width = screenH * this.videoWidth / this.videoHeight;
+                    this.surfaceView.setLayoutParams(params);
+                }
+
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }catch (Exception e){e.printStackTrace();}
@@ -274,4 +290,47 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
         }
         this.surfaceHolder.setFixedSize(this.videoWidth, this.videoHeight);
     }
+
+    @Override
+    public void start() {
+        mediaPlayer.start();
+        cbar.checkPlayBtn(mediaPlayer.isPlaying());
+    }
+
+    @Override
+    public void pause() {
+        mediaPlayer.pause();
+        cbar.checkPlayBtn(mediaPlayer.isPlaying());
+    }
+
+    @Override
+    public void stop() {
+        mediaPlayer.stop();
+    }
+
+    @Override
+    public void release() {
+        mediaPlayer.release();
+    }
+
+    @Override
+    public void seekTo(int position) {
+        mediaPlayer.seekTo(position);
+    }
+
+    @Override
+    public int getCurrentVideoPosition() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentVideoDuration() {
+        return 0;
+    }
+
+    @Override
+    public boolean isVideoPlaying() {
+        return false;
+    }
+
 }

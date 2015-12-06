@@ -4,10 +4,9 @@ import android.media.MediaPlayer;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.androidvideoplayer.core.base.BasePlayer;
+import com.androidvideoplayer.core.base.IPlayer;
 import com.androidvideoplayer.core.base.BaseVideoPlayer;
 import com.androidvideoplayer.core.model.VideoInfo;
-import com.androidvideoplayer.core.util.VideoLog;
 
 import java.util.ArrayList;
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
  *
  * This class will return the media player of the android system with cache preload
  */
-public class AndroidMediaPlayer extends BaseVideoPlayer implements BasePlayer{
+public class AndroidMediaPlayer extends BaseVideoPlayer implements IPlayer {
 
     private ArrayList<VideoInfo> videoList;
 

@@ -8,7 +8,7 @@ import android.view.SurfaceView;
  *
  * This is a strategy of the video player to identify the basic functionality of the video player
  */
-public interface BasePlayer {
+public interface IPlayer {
 
     /**
      * start to play the video

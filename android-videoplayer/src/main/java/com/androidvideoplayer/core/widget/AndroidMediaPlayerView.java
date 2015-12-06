@@ -2,18 +2,14 @@ package com.androidvideoplayer.core.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
-import com.androidvideoplayer.core.base.BaseVideoPlayerView;
-import com.androidvideoplayer.core.model.VideoInfo;
-
-import java.util.ArrayList;
+import com.androidvideoplayer.core.base.BasePlayerView;
 
 /**
  * Created by wayne on 12/5/15.
+ *
  */
-public abstract class AndroidMediaPlayerView extends BaseVideoPlayerView {
+public abstract class AndroidMediaPlayerView extends BasePlayerView {
 
     public AndroidMediaPlayerView(Context context){
         super(context);

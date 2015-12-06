@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
  * Created by wayne on 12/5/15.
  *
  */
-public abstract class BaseVideoPlayerView extends RelativeLayout implements BasePlayer{
+public abstract class BasePlayerView extends RelativeLayout implements IPlayer {
 
     protected Context context;
 
@@ -43,11 +42,11 @@ public abstract class BaseVideoPlayerView extends RelativeLayout implements Base
     protected VideoInfo currentVideoInfo;
 
 
-    public BaseVideoPlayerView(Context context){
+    public BasePlayerView(Context context){
         super(context);
     }
 
-    public BaseVideoPlayerView(Context context, AttributeSet attrs) {
+    public BasePlayerView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
