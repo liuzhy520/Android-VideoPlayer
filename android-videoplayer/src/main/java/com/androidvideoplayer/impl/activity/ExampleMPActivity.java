@@ -38,7 +38,6 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
     private boolean isFullScreenClick = false;
     private int currentPosition = 0;
     private LinearLayout controller;
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,7 +217,7 @@ public class ExampleMPActivity extends BaseDemoActivity implements MediaPlayer.O
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
 
-        logV("buffering :" + i);
+        logV("buffering :" + i + "%");
     }
 
     @Override
