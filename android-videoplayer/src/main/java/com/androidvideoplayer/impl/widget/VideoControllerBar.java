@@ -57,4 +57,9 @@ public class VideoControllerBar extends VideoController {
             }
         });
     }
+
+    @Override
+    protected void updateController(int position, int duration, boolean isPlaying) {
+        
+    }
 }

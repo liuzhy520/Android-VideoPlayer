@@ -10,6 +10,7 @@ import com.androidvideoplayer.core.base.IPlayer;
 
 /**
  * Created by wayne on 12/6/15.
+ *
  */
 public abstract class VideoController extends RelativeLayout implements IPlayer{
 
@@ -33,6 +34,8 @@ public abstract class VideoController extends RelativeLayout implements IPlayer{
     protected abstract void initViews();
 
     protected abstract void setViews();
+
+    protected abstract void updateController(int position, int duration, boolean isPlaying);
 
     protected void setContentView(int id){
         mContentView = LayoutInflater.from(mContext).inflate(id, this);
